@@ -22,7 +22,7 @@ class OrderController extends BaseController
         $total_price = $request->total_price;
         $date_create = $request->date_create;
         $discount = $request->discount;
-        $productArr = json_decode($request->productArr);
+        $productArr = $request->productArr;
         $validator = $this->validation($request);
         if($validator->fails())
         {
@@ -45,9 +45,9 @@ class OrderController extends BaseController
             {
                 foreach($productArr as $product)
                 {
-                    $product_id = $product->id;
-                    $quantity = $product->id;
-                    $price = $product->price;
+                    $product_id = $product['product_id'];
+                    $quantity = $product['quantity'];
+                    $price = $product['price'];
                     OrderDetail::create([
                         'order_id' => $order_id,
                         'product_id' => $product_id,    
@@ -66,7 +66,8 @@ class OrderController extends BaseController
             'cash_given' => 'required|numeric',
             'cash_return' => 'required|numeric',
             'total_price' => 'required|numeric',
-            'date_create' => 'required|date',    
+            'date_create' => 'required|date',  
+            'discount' => "required|numeric" 
         ]);
         return $validator;
     }

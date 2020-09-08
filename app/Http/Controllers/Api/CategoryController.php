@@ -40,7 +40,7 @@ class CategoryController extends BaseController
         else
         {
             $data = Category::create($request->all());
-            return $this->responseSuccess($data);
+            return $this->responseSuccess($data, "Success",201);
         }
     }
 

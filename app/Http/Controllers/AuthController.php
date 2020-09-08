@@ -28,7 +28,7 @@ class AuthController extends BaseController
         ]);
         $token = JWTAuth::fromUser($data);
         $data->token = $token;
-        return $this->responseSuccess($data);
+        return $this->responseSuccess($data, "Success",201);
     }
 
     public function login(Request $request)

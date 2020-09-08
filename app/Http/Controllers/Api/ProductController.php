@@ -52,7 +52,7 @@ class ProductController extends BaseController
                 'groupcategory_id' => $request->groupcategory_id,
                 'image' => $path,
             ]);
-            return $this->responseSuccess($data);
+            return $this->responseSuccess($data, "Success",201);
         }
     }
 
