@@ -13,6 +13,12 @@ use Validator;
 
 class AuthController extends BaseController
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
+
     public function register(Request $request)
     {
         $validator = $this->validation($request);
@@ -45,7 +51,7 @@ class AuthController extends BaseController
        
         $credentials = $request->only('email', 'password');
 
-        if (!($token = JWTAuth::attempt($credentials))) {
+        if (!($token = $this->guard()->attempt($credentials))) {
             return response()->json([
                 'status' => false,
                 'msg' => 'Email or password is not correct!!',
@@ -53,9 +59,11 @@ class AuthController extends BaseController
         }
         $email = $request->email;
         $role = User::where('email',$email)->get('role_id');
+        $expires_at = $this->guard()->factory()->getTTL() * 60;
         $data = [
             'email' => $email,
-            'role' => $role
+            'role' => $role,
+            'expires_at' => $expires_at
         ];
         return response()->json(['token' => $token, 'data'=> $data], Response::HTTP_OK);
     }
@@ -85,11 +93,9 @@ class AuthController extends BaseController
         ]);
         try {
             JWTAuth::invalidate($request->input('token'));
-            //return response()->json('', Response::HTTP_OK);
             return $this->responseSuccess(null,'You have successfully logged out.');
         } catch (JWTException $e) {
-            return $this->responseError(null,'Failed to logout, please try again.');
-            //return response()->json('Failed to logout, please try again.', Response::HTTP_BAD_REQUEST);
+            return $this->responseError(null,'Failed to logout, please try again.',400);
         }
     }
 
@@ -108,13 +114,9 @@ class AuthController extends BaseController
         return $validator;
     }
 
-    protected function createNewToken($token){
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
-        ]);
+    public function guard()
+    {
+        return Auth::guard();
     }
 
 }
