@@ -81,7 +81,6 @@ class OrderController extends BaseController
         if($order)
         {
             $orderdetail = $order->getOrderDetail();
-            return $orderdetail->get(); 
             return $this->responseSuccess($orderdetail);
         }
         else    
