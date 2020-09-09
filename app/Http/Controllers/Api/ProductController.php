@@ -138,9 +138,7 @@ class ProductController extends BaseController
 
     public function loadData(Request $request)
     {
-        return 1;
         $id = $request->id;
-        return $id;
         if(!empty($id) || $id == 0)
         {
             if($request->id > 0)
