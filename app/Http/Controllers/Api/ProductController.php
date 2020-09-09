@@ -30,9 +30,9 @@ class ProductController extends BaseController
     public function store(Request $request)
     {
         $validation = [
-            'name' => 'required|unique:product',
+            'name' => 'required|unique:product|min:3|max:100',
             'groupcategory_id' => 'required',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:1000|max:10000000',
             'image' => 'required|image'
         ];
         $validator = $this->validation($request,$validation);
@@ -83,7 +83,7 @@ class ProductController extends BaseController
         $product = Product::find($id);
         if(!$product)
         {
-            return $this->responseError($product);
+            return $this->responseError($product,"Product not found",404);
         }
         else
         {
@@ -138,7 +138,9 @@ class ProductController extends BaseController
 
     public function loadData(Request $request)
     {
+        return 1;
         $id = $request->id;
+        return $id;
         if(!empty($id) || $id == 0)
         {
             if($request->id > 0)
@@ -155,10 +157,9 @@ class ProductController extends BaseController
         return $this->responseSuccess(null);
     }
 
-    public function validation($request,$data)
+    public function validation(\Illuminate\Http\Request $request,$data)
     {
         $validator = Validator::make($request->all(),$data);
         return $validator;
     }
-
 }

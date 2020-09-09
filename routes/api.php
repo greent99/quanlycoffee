@@ -24,7 +24,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 });
 
 //User route
-Route::group(['middleware'=>['jwt.auth', 'role'],'prefix'=>'user'], function () {
+Route::group(['middleware'=>['jwt.auth'],'prefix'=>'user'], function () {
     Route::get('/','Api\UserController@index');
     Route::post('update/{id}','Api\UserController@update');
     Route::delete('delete/{id}','Api\UserController@destroy');
@@ -57,7 +57,13 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'product'], function () {
 });
 
 //handle order
-Route::post('order/create', 'Api\OrderController@createOrder');
-
+Route::group(['middleware'=>['jwt.auth'],'prefix'=>'order'], function () {
+    Route::get('/', 'Api\OrderController@index');
+    Route::get('show/{id}', 'Api\OrderController@show');
+    Route::get('detail/{id}', 'Api\OrderController@getOrderDetail');
+    Route::post('create', 'Api\OrderController@createOrder');
+    Route::post('update/{id}', 'Api\OrderController@update');
+    Route::delete('delete/{id}', 'Api\OrderController@destroy');
+});
 
 

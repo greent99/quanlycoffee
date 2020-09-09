@@ -29,7 +29,7 @@ class CategoryController extends BaseController
     public function store(Request $request)
     {
         $validation = [
-            'name' => 'required|unique:category'
+            'name' => 'required|unique:category|min:3|max:100'
         ];
         $validator = $this->validation($request,$validation);
         if($validator->fails())
@@ -83,7 +83,7 @@ class CategoryController extends BaseController
         else
         {
             $validation = [
-                'name' => 'required'
+                'name' => 'required|min:3|max:100'
             ];
             $validator = $this->validation($request,$validation);
             if($validator->fails())

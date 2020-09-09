@@ -11,6 +11,12 @@ use Validator;
 
 class OrderController extends BaseController
 {
+
+    public function index(Request $request)
+    {
+        return Order::all();
+    }
+
     public function createOrder(Request $request)
     {
         $token = JWTAuth::parseToken();
@@ -57,6 +63,73 @@ class OrderController extends BaseController
                 }
             }
             return $this->responseSuccess($data);          
+        }
+    }
+
+    public function show($id)
+    {
+        $order = Order::find($id);
+        if($order)
+            return $this->responseSuccess($order);
+        else
+            return $this->responseError($order,"Order not found",404);
+    }
+
+    public function getOrderDetail($id)
+    {
+        $order = Order::find($id);
+        if($order)
+        {
+            $orderdetail = $order->getOrderDetail();
+            return $orderdetail->get();
+            return $this->responseSuccess($orderdetail);
+        }
+        else    
+            return $this->responseError($order,"Order not found",404);
+    }
+
+    public function update(Request $request,$id)
+    {
+        $order = Order::find($id);
+        if(!$order)
+        {
+            return $this->responseError($order);
+        }
+        else
+        {
+            $validation = [
+                'cash_given' => 'required|numeric',
+                'cash_return' => 'required|numeric',
+                'total_price' => 'required|numeric',
+                'date_create' => 'required|date',  
+                'discount' => "required|numeric" 
+            ];
+            $validator = $this->validation($request,$validation);
+            if($validator->fails())
+            {
+                $error = $validator->messages();
+                return $this->responseValidate($error);
+            }
+            else
+            {
+                $request->user_id = $order->user_id;
+                $data = $order->update($request->all());
+                return $this->responseSuccess($data);
+            }
+        }
+    }
+
+    public function destroy($id)
+    {
+        $data = Order::find($id);
+        if($data)
+        {
+            $data = $data->delete();
+            return $this->responseSuccess($data);
+        }
+        else
+        {
+            return $this->responseError($data,"Order not found",404);
         }
     }
 

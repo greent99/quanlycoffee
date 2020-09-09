@@ -14,11 +14,6 @@ use Validator;
 class AuthController extends BaseController
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
-
     public function register(Request $request)
     {
         $validator = $this->validation($request);
@@ -32,6 +27,7 @@ class AuthController extends BaseController
             'email'=>$request->email,
             'password'=>Hash::make($request->password),
         ]);
+        return $data;
         $token = JWTAuth::fromUser($data);
         $data->token = $token;
         return $this->responseSuccess($data, "Success",201);
@@ -75,7 +71,6 @@ class AuthController extends BaseController
         if ($user) {
             return response($user, Response::HTTP_OK);
         }
-
         return response(null, Response::HTTP_BAD_REQUEST);
     }
 
@@ -87,16 +82,8 @@ class AuthController extends BaseController
      * @param Request $request
      */
     public function logout(Request $request) {
-        //$this->validate($request, ['token' => 'required']);
-        $validator = Validator::make($request->all(),[
-            'token' => 'required'
-        ]);
-        try {
-            JWTAuth::invalidate($request->input('token'));
-            return $this->responseSuccess(null,'You have successfully logged out.');
-        } catch (JWTException $e) {
-            return $this->responseError(null,'Failed to logout, please try again.',400);
-        }
+        $this->guard()->logout();
+        return $this->responseSuccess(null,'You have successfully logged out.');
     }
 
     public function refresh()
@@ -107,8 +94,8 @@ class AuthController extends BaseController
     public function validation(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
+            'name' => 'required|unique:users|min:3|max:30',
+            'email' => 'required|email|unique:users|min:8|max:100',
             'password' => 'required|min:6'
         ]);
         return $validator;
@@ -118,5 +105,4 @@ class AuthController extends BaseController
     {
         return Auth::guard();
     }
-
 }
