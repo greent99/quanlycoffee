@@ -27,7 +27,6 @@ class AuthController extends BaseController
             'email'=>$request->email,
             'password'=>Hash::make($request->password),
         ]);
-        return $data;
         $token = JWTAuth::fromUser($data);
         $data->token = $token;
         return $this->responseSuccess($data, "Success",201);
@@ -83,7 +82,7 @@ class AuthController extends BaseController
      */
     public function logout(Request $request) {
         $this->guard()->logout();
-        return $this->responseSuccess(null,'You have successfully logged out.');
+        return $this->responseSuccess(null,'You have successfully logged out.',200);
     }
 
     public function refresh()

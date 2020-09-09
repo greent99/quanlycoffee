@@ -61,7 +61,7 @@ class CategoryController extends BaseController
                 $data = $category->getGroupCategory()->get();
                 return $this->responseSuccess($data);
             }
-            return $this->responseError($category);
+            return $this->responseError($category,'Category not found',404);
         }
         return $this->responseError(null);
     }
@@ -78,7 +78,7 @@ class CategoryController extends BaseController
         $category = Category::find($id);
         if(!$category)
         {
-            return $this->responseError($category);
+            return $this->responseError($category,'Category not found',404);
         }
         else
         {
@@ -115,7 +115,7 @@ class CategoryController extends BaseController
         }
         else
         {
-            return $this->responseError($data);
+            return $this->responseError($data,'Category not found',404);
         }
     }
 

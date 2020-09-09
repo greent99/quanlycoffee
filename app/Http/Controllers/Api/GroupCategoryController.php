@@ -60,7 +60,7 @@ class GroupCategoryController extends BaseController
             $data = $groupcategory->getProduct()->get();
             return $this->responseSuccess($data);
         }
-        return $this->responseError(null);  
+        return $this->responseError(null,'Group not found',404);  
     }
 
     /**
@@ -91,7 +91,7 @@ class GroupCategoryController extends BaseController
         }
         else
         {
-            return $this->responseError($data,"Group category not found",404);
+            return $this->responseError($data,"Group not found",404);
         }
     }
 

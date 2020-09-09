@@ -54,7 +54,7 @@ class UserController extends BaseController
         $user = User::find($id);
         if(!$user)
         {
-            return $this->responseError($product);
+            return $this->responseError($user,"User not found",404);
         }
         else
         {
@@ -93,7 +93,7 @@ class UserController extends BaseController
         }
         else
         {
-            return $this->responseError($data);
+            return $this->responseError($data,"User not found",404);
         }
     }
 

@@ -68,7 +68,7 @@ class ProductController extends BaseController
         if($data)
             return $this->responseSuccess($data);
         else
-            return $this->responseError($data);
+            return $this->responseError($data,"Product not found",404);
     }
 
     /**
@@ -89,8 +89,8 @@ class ProductController extends BaseController
         {
             $validation = [
                 'name' => 'required',
-                'groupcategory_id' => 'required',
-                'price' => 'required|numeric',
+                'groupcategory_id' => 'required|min:3|max:100',
+                'price' => 'required|numeric|min:1000|max:10000000',
                 'image' => 'required|image'
             ];
             $validator = $this->validation($request,$validation);
@@ -132,7 +132,7 @@ class ProductController extends BaseController
         }
         else
         {
-            return $this->responseError($data);
+            return $this->responseError($data,"Product not found",404);
         }
     }
 
@@ -157,7 +157,7 @@ class ProductController extends BaseController
         return $this->responseSuccess(null);
     }
 
-    public function validation(\Illuminate\Http\Request $request,$data)
+    public function validation(Request $request,$data)
     {
         $validator = Validator::make($request->all(),$data);
         return $validator;

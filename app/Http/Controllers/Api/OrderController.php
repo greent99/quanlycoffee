@@ -29,7 +29,14 @@ class OrderController extends BaseController
         $date_create = $request->date_create;
         $discount = $request->discount;
         $productArr = $request->productArr;
-        $validator = $this->validation($request);
+        $validation = [
+            'cash_given' => 'required|numeric',
+            'cash_return' => 'required|numeric',
+            'total_price' => 'required|numeric',
+            'date_create' => 'required|date',  
+            'discount' => "required|numeric" 
+        ];
+        $validator = $this->validation($request,$validation);
         if($validator->fails())
         {
             $error = $validator->messages();
@@ -132,15 +139,9 @@ class OrderController extends BaseController
         }
     }
 
-    public function validation($request)
+    public function validation($request, $data)
     {
-        $validator = Validator::make($request->all(),[
-            'cash_given' => 'required|numeric',
-            'cash_return' => 'required|numeric',
-            'total_price' => 'required|numeric',
-            'date_create' => 'required|date',  
-            'discount' => "required|numeric" 
-        ]);
+        $validator = Validator::make($request->all(),$data);
         return $validator;
     }
 }
