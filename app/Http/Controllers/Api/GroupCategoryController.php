@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\GroupCategory;
+use Validator;
 
 class GroupCategoryController extends BaseController
 {
@@ -26,7 +27,23 @@ class GroupCategoryController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $validation = [
+            'name' => 'required|unique:category|min:3|max:100'
+        ];
+        $validator = $this->validation($request,$validation);
+        if($validator->fails())
+        {
+            $error = $validator->messages();
+            return $this->responseValidate($error);
+        }
+        else
+        {
+            $data = GroupCategory::create([
+                'name' => $request->name,
+                'category_id' => $request->category_id
+            ]);
+            return $this->responseSuccess($data, "Success",201);
+        }
     }
 
     /**
@@ -66,7 +83,22 @@ class GroupCategoryController extends BaseController
      */
     public function destroy($id)
     {
-        //
+        $data = GroupCategory::find($id);
+        if($data)
+        {
+            $data = $data->delete();
+            return $this->responseSuccess($data);
+        }
+        else
+        {
+            return $this->responseError($data,"Group category not found",404);
+        }
+    }
+
+    public function validation($request, $data)
+    {
+        $validator = Validator::make($request->all(),$data);
+        return $validator;
     }
 }
 
