@@ -102,11 +102,17 @@ class ProductController extends BaseController
                 return $this->responseValidate($error);
             } else {
                 if ($request->hasFile('image')) {
-                    $file = $request->file('image');
-                    $filename = $file->getClientOriginalName();
-                    $status = Storage::putFileAs('public', $file, $filename);
-                    $path = public_path().'/storage/'.$filename;
-                    Storage::delete($product->image);
+                    $uploadFolder = 'product';
+                    $image = $request->file('image');
+        
+                    $image_uploaded_path = $image->store($uploadFolder, 'public');
+        
+                    $uploadedImageResponse = [
+                        "image_name" => basename($image_uploaded_path),
+                        "image_url" => Storage::disk('public')->url($image_uploaded_path),
+                        "mime" => $image->getClientMimeType()
+                    ];
+                    $path = $uploadedImageResponse['image_url'];
                 } else {
                     $path = $product->image;
                 }
