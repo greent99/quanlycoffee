@@ -41,15 +41,22 @@ class ProductController extends BaseController
             $error = $validator->messages();
             return $this->responseValidate($error);
         } else {
-            $file = $request->file('image');
-            $filename = $file->getClientOriginalName();
-            $status = Storage::putFileAs('public', $file, $filename);
-            $path = public_path().'/storage/'.$filename;
+            $uploadFolder = 'product';
+            $image = $request->file('image');
+
+            $image_uploaded_path = $image->store($uploadFolder, 'public');
+
+            $uploadedImageResponse = [
+                "image_name" => basename($image_uploaded_path),
+                "image_url" => Storage::disk('public')->url($image_uploaded_path),
+                "mime" => $image->getClientMimeType()
+            ];
+
             $data = Product::create([
                 'name' => $request->name,
                 'price' => $request->price,
                 'groupcategory_id' => $request->groupcategory_id,
-                'image' => $path,
+                'image' => $uploadedImageResponse['image_url'],
             ]);
             return $this->responseSuccess($data, "Success", 201);
         }
