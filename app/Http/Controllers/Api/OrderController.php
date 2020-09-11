@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\OrderDetail;
+use Carbon\Carbon;
 use JWTAuth;
 use Validator;
 
@@ -30,11 +32,7 @@ class OrderController extends BaseController
         $discount = $request->discount;
         $productArr = $request->productArr;
         $validation = [
-            'cash_given' => 'required|numeric',
-            'cash_return' => 'required|numeric',
             'total_price' => 'required|numeric',
-            'date_create' => 'required|date',  
-            'discount' => "required|numeric" 
         ];
         $validator = $this->validation($request,$validation);
         if($validator->fails())
@@ -44,13 +42,14 @@ class OrderController extends BaseController
         }
         else
         {
+            $date_create = Carbon::now();
             $data = Order::create([
                 'user_id' => $user_id,
                 'date_create' => $date_create,
                 'total_price' => $total_price,
-                'cash_given' => $cash_given,
-                'cash_return' => $cash_return,
-                'discount' => $discount
+                'cash_given' => 0,
+                'cash_return' => 0,
+                'discount' => 0
             ]);
             //store order detail 
             $order_id = $data->id;
@@ -87,8 +86,24 @@ class OrderController extends BaseController
         $order = Order::find($id);
         if($order)
         {
-            $orderdetail = $order->getOrderDetail();
-            return $this->responseSuccess($orderdetail);
+            $orderdetails = $order->getOrderDetail();
+            $data = [];
+            foreach($orderdetails as $orderdetail)
+            {
+                $product_id = $orderdetail->product_id;
+                $product = Product::find($product_id);
+                $object = [
+                    'id' => $orderdetail->id,
+                    'quantity' => $orderdetail->quantity,
+                    'price' => $orderdetail->price,
+                    'order_id' => $orderdetail->order_id,
+                    'product' => $product,
+                    'created_at' => $orderdetail->created_at,
+                    'updated_at' => $orderdetail->updated_at,
+                ];
+                array_push($data,$object);
+            }
+            return $this->responseSuccess($data);
         }
         else    
             return $this->responseError($order,"Order not found",404);
@@ -104,11 +119,7 @@ class OrderController extends BaseController
         else
         {
             $validation = [
-                'cash_given' => 'required|numeric',
-                'cash_return' => 'required|numeric',
                 'total_price' => 'required|numeric',
-                'date_create' => 'required|date',  
-                'discount' => "required|numeric" 
             ];
             $validator = $this->validation($request,$validation);
             if($validator->fails())
@@ -119,7 +130,9 @@ class OrderController extends BaseController
             else
             {
                 $request->user_id = $order->user_id;
-                $data = $order->update($request->all());
+                $data = $order->update([
+                    'total_price' => $request->total_price
+                ]);
                 return $this->responseSuccess($data);
             }
         }

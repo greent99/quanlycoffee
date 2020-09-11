@@ -31,8 +31,8 @@ class ProductController extends BaseController
     {
         $validation = [
             'name' => 'required|unique:product|min:3|max:100',
-            'groupcategory_id' => 'required',
-            'price' => 'required|numeric|min:1000|max:10000000',
+            'groupcategory_id' => 'required|numeric',
+            'price' => 'required|numeric|between:1000,10000000',
             'image' => 'required|image'
         ];
         $validator = $this->validation($request,$validation);
@@ -45,7 +45,8 @@ class ProductController extends BaseController
         {
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
-            $path = Storage::putFileAs('images',$file,$filename);
+            $status = Storage::putFileAs('public',$file,$filename);
+            $path = "public/storage/".$filename;
             $data = Product::create([
                 'name' => $request->name,
                 'price' => $request->price,
@@ -88,10 +89,9 @@ class ProductController extends BaseController
         else
         {
             $validation = [
-                'name' => 'required',
-                'groupcategory_id' => 'required|min:3|max:100',
-                'price' => 'required|numeric|min:1000|max:10000000',
-                'image' => 'required|image'
+                'name' => 'required|min:3|max:100',
+                'groupcategory_id' => 'required',
+                'price' => 'required|numeric|between:1000,10000000',
             ];
             $validator = $this->validation($request,$validation);
             if($validator->fails())
@@ -101,10 +101,18 @@ class ProductController extends BaseController
             }
             else
             {
-                $file = $request->file('image');
-                $filename = $file->getClientOriginalName();
-                $path = Storage::putFileAs('images',$file,$filename);
-                Storage::delete($product->image);
+                if($request->hasFile('image'))
+                {
+                    $file = $request->file('image');
+                    $filename = $file->getClientOriginalName();
+                    $status = Storage::putFileAs('public',$file,$filename);
+                    $path = "public/storage/".$filename;
+                    Storage::delete($product->image);
+                }
+                else
+                {
+                    $path = $product->image;
+                }
                 $data = $product->update([
                     'name' => $request->name,
                     'price' => $request->price,

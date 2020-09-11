@@ -18,7 +18,7 @@ class CreateProductTable extends Migration
             $table->string('name');
             $table->float('price')->default(0);
             $table->string('image')->nullable();
-            $table->integer('category_id')->unsigned();
+            $table->integer('groupcategory_id')->unsigned();
             $table->timestamps();
         });
     }
