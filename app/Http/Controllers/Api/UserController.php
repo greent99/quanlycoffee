@@ -89,7 +89,7 @@ class UserController extends BaseController
         if($data)
         {
             $data = $data->delete();
-            return $this->responseSuccess($data);
+            return $this->responseSuccess($data,"Success",204);
         }
         else
         {
