@@ -13,9 +13,9 @@ use Validator;
 
 class AuthController extends BaseController
 {
-
     public function register(Request $request)
     {
+        
         $validator = $this->validation($request);
         if($validator->fails())
         {

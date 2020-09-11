@@ -46,7 +46,7 @@ class ProductController extends BaseController
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
             $status = Storage::putFileAs('public',$file,$filename);
-            $path = "public/storage/".$filename;
+            $path = public_path().'/storage/'.$filename;
             $data = Product::create([
                 'name' => $request->name,
                 'price' => $request->price,
@@ -106,7 +106,7 @@ class ProductController extends BaseController
                     $file = $request->file('image');
                     $filename = $file->getClientOriginalName();
                     $status = Storage::putFileAs('public',$file,$filename);
-                    $path = "public/storage/".$filename;
+                    $path = public_path().'/storage/'.$filename;
                     Storage::delete($product->image);
                 }
                 else
