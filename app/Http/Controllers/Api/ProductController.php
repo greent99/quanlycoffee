@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Validator;
+use Image;
 
 class ProductController extends BaseController
 {
@@ -35,17 +36,14 @@ class ProductController extends BaseController
             'price' => 'required|numeric|between:1000,10000000',
             'image' => 'required|image'
         ];
-        $validator = $this->validation($request,$validation);
-        if($validator->fails())
-        {
+        $validator = $this->validation($request, $validation);
+        if ($validator->fails()) {
             $error = $validator->messages();
             return $this->responseValidate($error);
-        }
-        else
-        {
+        } else {
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
-            $status = Storage::putFileAs('public',$file,$filename);
+            $status = Storage::putFileAs('public', $file, $filename);
             $path = public_path().'/storage/'.$filename;
             $data = Product::create([
                 'name' => $request->name,
@@ -53,7 +51,7 @@ class ProductController extends BaseController
                 'groupcategory_id' => $request->groupcategory_id,
                 'image' => $path,
             ]);
-            return $this->responseSuccess($data, "Success",201);
+            return $this->responseSuccess($data, "Success", 201);
         }
     }
 
@@ -66,10 +64,11 @@ class ProductController extends BaseController
     public function show($id)
     {
         $data = Product::find($id);
-        if($data)
+        if ($data) {
             return $this->responseSuccess($data);
-        else
-            return $this->responseError($data,"Product not found",404);
+        } else {
+            return $this->responseError($data, "Product not found", 404);
+        }
     }
 
     /**
@@ -82,35 +81,26 @@ class ProductController extends BaseController
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
-        if(!$product)
-        {
-            return $this->responseError($product,"Product not found",404);
-        }
-        else
-        {
+        if (!$product) {
+            return $this->responseError($product, "Product not found", 404);
+        } else {
             $validation = [
                 'name' => 'required|min:3|max:100',
                 'groupcategory_id' => 'required',
                 'price' => 'required|numeric|between:1000,10000000',
             ];
-            $validator = $this->validation($request,$validation);
-            if($validator->fails())
-            {
+            $validator = $this->validation($request, $validation);
+            if ($validator->fails()) {
                 $error = $validator->messages();
                 return $this->responseValidate($error);
-            }
-            else
-            {
-                if($request->hasFile('image'))
-                {
+            } else {
+                if ($request->hasFile('image')) {
                     $file = $request->file('image');
                     $filename = $file->getClientOriginalName();
-                    $status = Storage::putFileAs('public',$file,$filename);
+                    $status = Storage::putFileAs('public', $file, $filename);
                     $path = public_path().'/storage/'.$filename;
                     Storage::delete($product->image);
-                }
-                else
-                {
+                } else {
                     $path = $product->image;
                 }
                 $data = $product->update([
@@ -133,39 +123,32 @@ class ProductController extends BaseController
     public function destroy($id)
     {
         $data = Product::find($id);
-        if($data)
-        {
+        if ($data) {
             $data = $data->delete();
-            return $this->responseSuccess($data,"Success",204);
-        }
-        else
-        {
-            return $this->responseError($data,"Product not found",404);
+            return $this->responseSuccess($data, "Success", 204);
+        } else {
+            return $this->responseError($data, "Product not found", 404);
         }
     }
 
     public function loadData(Request $request)
     {
         $id = $request->id;
-        if(!empty($id) || $id == 0)
-        {
-            if($request->id > 0)
-            {
-                $data = Product::where('id','<',$id)->orderBy('id','DESC')->limit(5)->get();
+        if (!empty($id) || $id == 0) {
+            if ($request->id > 0) {
+                $data = Product::where('id', '<', $id)->orderBy('id', 'DESC')->limit(5)->get();
                 return $this->responseSuccess($data);
-            }
-            else
-            {
-                $data = Product::orderBy('id','DESC')->limit(5)->get();
+            } else {
+                $data = Product::orderBy('id', 'DESC')->limit(5)->get();
                 return $this->responseSuccess($data);
             }
         }
         return $this->responseSuccess(null);
     }
 
-    public function validation(Request $request,$data)
+    public function validation(Request $request, $data)
     {
-        $validator = Validator::make($request->all(),$data);
+        $validator = Validator::make($request->all(), $data);
         return $validator;
     }
 }
