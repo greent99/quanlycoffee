@@ -51,12 +51,12 @@ class ProductController extends BaseController
                 "image_url" => Storage::disk('public')->url($image_uploaded_path),
                 "mime" => $image->getClientMimeType()
             ];
-
             $data = Product::create([
                 'name' => $request->name,
                 'price' => $request->price,
                 'groupcategory_id' => $request->groupcategory_id,
                 'image' => $uploadedImageResponse['image_url'],
+                'description' => $request->description,
             ]);
             return $this->responseSuccess($data, "Success", 201);
         }
