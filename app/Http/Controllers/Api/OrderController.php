@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderDetail;
+use DB;
 use Carbon\Carbon;
 use JWTAuth;
 use Validator;
@@ -21,16 +22,6 @@ class OrderController extends BaseController
 
     public function createOrder(Request $request)
     {
-        $token = JWTAuth::parseToken();
-        //Try authenticating user       
-        $user = $token->authenticate();
-        $user_id = $user->id;
-        $cash_given = $request->cash_given;
-        $cash_return = $request->cash_return;
-        $total_price = $request->total_price;
-        $date_create = $request->date_create;
-        $discount = $request->discount;
-        $productArr = $request->productArr;
         $validation = [
             'total_price' => 'required|numeric',
         ];
@@ -42,33 +33,45 @@ class OrderController extends BaseController
         }
         else
         {
-            $date_create = Carbon::now();
-            $data = Order::create([
-                'user_id' => $user_id,
-                'date_create' => $date_create,
-                'total_price' => $total_price,
-                'cash_given' => 0,
-                'cash_return' => 0,
-                'discount' => 0
-            ]);
-            //store order detail 
-            $order_id = $data->id;
-            if(count($productArr) > 0)
-            {
-                foreach($productArr as $product)
+            DB::transaction(function() use ($request,&$data){
+                $token = JWTAuth::parseToken();
+                //Try authenticating user       
+                $user = $token->authenticate();
+                $user_id = $user->id;
+                //$cash_given = $request->cash_given;
+                //$cash_return = $request->cash_return;
+                $total_price = $request->total_price;
+                //$discount = $request->discount;
+                $productArr = $request->productArr;
+                $date_create = Carbon::now();
+                $data = Order::create([
+                    'user_id' => $user_id,
+                    'date_create' => $date_create,
+                    'total_price' => $total_price,
+                    'cash_given' => 0,
+                    'cash_return' => 0,
+                    'discount' => 0
+                ]);
+                //store order detail 
+                $order_id = $data->id;
+                if(count($productArr) > 0)
                 {
-                    $product_id = $product['product_id'];
-                    $quantity = $product['quantity'];
-                    $price = $product['price'];
-                    OrderDetail::create([
-                        'order_id' => $order_id,
-                        'product_id' => $product_id,    
-                        'quantity' => $quantity,
-                        'price' => $price
-                    ]);
+                    foreach($productArr as $product)
+                    {
+                        $product_id = $product['product_id'];
+                        $quantity = $product['quantity'];
+                        $price = $product['price'];
+                        OrderDetail::create([
+                            'order_id' => $order_id,
+                            'product_id' => $product_id,    
+                            'quantity' => $quantity,
+                            'price' => $price
+                        ]);
+                    }
                 }
-            }
-            return $this->responseSuccess($data);          
+                return $data;     
+            });
+            return $this->responseSuccess($data);   
         }
     }
 
@@ -112,9 +115,9 @@ class OrderController extends BaseController
     public function update(Request $request,$id)
     {
         $order = Order::find($id);
-        if(!$order)
+        if(empty($order))
         {
-            return $this->responseError($order);
+            return $this->responseError($order,"Order not found", 404);
         }
         else
         {

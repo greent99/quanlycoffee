@@ -136,9 +136,9 @@ class ProductController extends BaseController
     public function destroy($id)
     {
         $data = Product::find($id);
-        if ($data) {
+        if (!empty($data)) {
             $data = $data->delete();
-            return $this->responseSuccess($data, "Success", 204);
+            return $this->responseSuccess($data,"Success", 204);
         } else {
             return $this->responseError($data, "Product not found", 404);
         }
@@ -147,12 +147,13 @@ class ProductController extends BaseController
     public function loadData(Request $request)
     {
         $id = $request->id;
-        if (!empty($id) || $id == 0) {
-            if ($request->id > 0) {
-                $data = Product::where('id', '<', $id)->orderBy('id', 'DESC')->limit(5)->get();
+        if ($id >= 0){
+            if ($id > 0) {
+                $data = Product::where('id', '<', $id)->orderBy('id', 'DESC')->limit(10)->get();
+                return $data;
                 return $this->responseSuccess($data);
             } else {
-                $data = Product::orderBy('id', 'DESC')->limit(5)->get();
+                $data = Product::orderBy('id', 'DESC')->limit(10)->get();
                 return $this->responseSuccess($data);
             }
         }
