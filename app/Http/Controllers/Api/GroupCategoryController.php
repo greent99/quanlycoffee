@@ -72,14 +72,29 @@ class GroupCategoryController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        // $groupcategory = GroupCategory::find($id);
-        // if (!$groupcategory) {
-        //     return $this->responseError($groupcategory, "Product not found", 404);
-        // } else {
-        //     $validation = [
-        //         'name' => 'required|min:3|max:100',
-        //         'category_id' => 'required|numeric'
-        //     ];
+        $groupcategory = GroupCategory::find($id);
+        if (!$groupcategory) {
+            return $this->responseError($groupcategory, "Group category not found", 404);
+        } else {
+            $validation = [
+                'name' => 'required|min:3|max:100',
+                'category_id' => 'required|numeric'
+            ];
+            $validator = $this->validation($request,$validation);
+            if($validator->fails())
+            {
+                $error = $validator->messages();
+                return $this->responseValidate($error);
+            }
+            else
+            {
+                $data = $groupcategory->update([
+                    'name' => $request->name,
+                    'category_id' => $request->category_id
+                ]);
+                return $this->responseSuccess($data);
+            }
+        }
     }
 
     /**
