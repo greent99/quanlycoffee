@@ -127,6 +127,7 @@ class ProductController extends BaseController
                     'price' => $request->price,
                     'groupcategory_id' => $request->groupcategory_id,
                     'image' => $path,
+                    'description' => $request->description,
                 ]);
                 return $this->responseSuccess($data);
             }

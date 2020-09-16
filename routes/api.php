@@ -45,6 +45,7 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'group'], function () {
     Route::get('/', 'Api\GroupCategoryController@index');
     Route::get('/{id}/product', 'Api\GroupCategoryController@show');
     Route::post('/add', 'Api\GroupCategoryController@store');
+    Route::post('/update/{id}', 'Api\GroupCategoryController@update');
     Route::delete('delete/{id}', 'Api\GroupCategoryController@destroy');
 });
 
@@ -55,6 +56,7 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'product'], function () {
     Route::post('update/{id}','Api\ProductController@update');
     Route::delete('delete/{id}','Api\ProductController@destroy');
     Route::get('/index', 'Api\ProductController@all');
+    Route::get('/detail/{id}', 'Api\ProductController@show');
 });
 
 //handle order

@@ -72,7 +72,14 @@ class GroupCategoryController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        // $groupcategory = GroupCategory::find($id);
+        // if (!$groupcategory) {
+        //     return $this->responseError($groupcategory, "Product not found", 404);
+        // } else {
+        //     $validation = [
+        //         'name' => 'required|min:3|max:100',
+        //         'category_id' => 'required|numeric'
+        //     ];
     }
 
     /**
@@ -86,6 +93,8 @@ class GroupCategoryController extends BaseController
         $data = GroupCategory::find($id);
         if($data)
         {
+            $products = $data->product()->get();
+            return $products;
             $data = $data->delete();
             return $this->responseSuccess($data,"Success",204);
         }
