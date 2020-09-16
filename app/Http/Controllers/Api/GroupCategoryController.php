@@ -27,7 +27,6 @@ class GroupCategoryController extends BaseController
      */
     public function store(Request $request)
     {
-        return GroupCategory::where('id', '>', 0)->get();
         $validation = [
             'name' => 'required|unique:groupcategory|min:3|max:100'
         ];
