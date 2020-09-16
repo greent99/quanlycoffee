@@ -17,7 +17,7 @@ class CategoryController extends BaseController
      */
     public function index()
     {
-         return Category::all();
+         return Category::all()->except(1);
     }
 
     /**

@@ -16,7 +16,7 @@ class GroupCategoryController extends BaseController
      */
     public function index()
     {
-        return GroupCategory::all();
+        return GroupCategory::all()->except(1);
     }
 
     /**
@@ -109,7 +109,15 @@ class GroupCategoryController extends BaseController
         if($data)
         {
             $products = $data->product()->get();
-            return $products;
+            if(!empty($products))
+            {
+                foreach($products as $product)
+                {
+                    $product->update([
+                        'groupcategory_id' => 1
+                    ]);
+                }
+            }
             $data = $data->delete();
             return $this->responseSuccess($data,"Success",204);
         }
