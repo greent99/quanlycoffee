@@ -19,7 +19,8 @@ class ProductController extends BaseController
      */
     public function index(Request $request)
     {
-        return Product::all();
+        $data = Product::orderBy('id','desc')->paginate(12);
+        return $this->responseSuccess($data);
     }
 
     /**
@@ -144,21 +145,6 @@ class ProductController extends BaseController
         }
     }
 
-    public function loadData(Request $request)
-    {
-        $id = $request->id;
-        if ($id >= 0){
-            if ($id > 0) {
-                $data = Product::where('id', '<', $id)->orderBy('id', 'DESC')->limit(10)->get();
-                return $data;
-                return $this->responseSuccess($data);
-            } else {
-                $data = Product::orderBy('id', 'DESC')->limit(10)->get();
-                return $this->responseSuccess($data);
-            }
-        }
-        return $this->responseSuccess(null);
-    }
 
     public function validation(Request $request, $data)
     {

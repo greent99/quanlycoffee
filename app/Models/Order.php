@@ -10,7 +10,7 @@ class Order extends Model
     protected $fillable = [
         'date_create', 'total_price', 'cash_given', 'cash_return', 'discount', 'user_id'
     ];
-    public function getOrderDetail()
+    public function order_detail()
     {
         return $this->hasMany(OrderDetail::class,'order_id','id')->get();
     }

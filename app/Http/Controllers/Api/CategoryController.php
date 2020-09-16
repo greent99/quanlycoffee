@@ -58,7 +58,7 @@ class CategoryController extends BaseController
             
             if(!empty($category))
             {
-                $data = $category->getGroupCategory()->get();
+                $data = $category->group_category()->get();
                 return $this->responseSuccess($data);
             }
             return $this->responseError($category,'Category not found',404);
@@ -107,16 +107,16 @@ class CategoryController extends BaseController
      */
     public function destroy($id)
     {
-        $data = Category::find($id);
-        if($data)
-        {
-            $data = $data->delete();
-            return $this->responseSuccess($data,"Success",204);
-        }
-        else
-        {
-            return $this->responseError($data,'Category not found',404);
-        }
+        // $data = Category::find($id);
+        // if($data)
+        // {
+        //     $data = $data->delete();
+        //     return $this->responseSuccess($data,"Success",204);
+        // }
+        // else
+        // {
+        //     return $this->responseError($data,'Category not found',404);
+        // }
     }
 
     public function validation($request, $data)

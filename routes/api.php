@@ -37,7 +37,7 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'category'], function () {
     Route::get('/{id}/group','Api\CategoryController@show');
     Route::post('/add','Api\CategoryController@store');
     Route::post('update/{id}','Api\CategoryController@update');
-    Route::delete('delete/{id}','Api\CategoryController@destroy');
+    //Route::delete('delete/{id}','Api\CategoryController@destroy');
 });
 
 //Group Category route
@@ -54,14 +54,12 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'product'], function () {
     Route::post('/add','Api\ProductController@store');
     Route::post('update/{id}','Api\ProductController@update');
     Route::delete('delete/{id}','Api\ProductController@destroy');
-    Route::get('loadmore', 'Api\ProductController@loadData');
-    Route::get('/{id}', 'Api\ProductController@show');
 });
 
 //handle order
 Route::group(['middleware'=>['jwt.auth'],'prefix'=>'order'], function () {
     Route::get('/', 'Api\OrderController@index');
-    Route::get('show/{id}', 'Api\OrderController@s  how');
+    Route::get('show/{id}', 'Api\OrderController@show');
     Route::get('detail/{id}', 'Api\OrderController@getOrderDetail');
     Route::post('create', 'Api\OrderController@createOrder');
     Route::post('update/{id}', 'Api\OrderController@update');

@@ -27,8 +27,9 @@ class GroupCategoryController extends BaseController
      */
     public function store(Request $request)
     {
+        return GroupCategory::where('id', '>', 0)->get();
         $validation = [
-            'name' => 'required|unique:category|min:3|max:100'
+            'name' => 'required|unique:groupcategory|min:3|max:100'
         ];
         $validator = $this->validation($request,$validation);
         if($validator->fails())
@@ -57,7 +58,7 @@ class GroupCategoryController extends BaseController
         $groupcategory = GroupCategory::find($id);
         if($groupcategory)
         {
-            $data = $groupcategory->getProduct()->get();
+            $data = $groupcategory->product()->get();
             return $this->responseSuccess($data);
         }
         return $this->responseError(null,'Group not found',404);  

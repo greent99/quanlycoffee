@@ -10,7 +10,7 @@ class GroupCategory extends Model
     protected $table = 'groupcategory';
     protected $fillable = ['name','category_id'];
 
-    public function getProduct()
+    public function product()
     {
         return $this->hasMany(Product::class,'groupcategory_id','id');
     }
