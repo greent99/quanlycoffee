@@ -17,6 +17,11 @@ class ProductController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+    public function all(Request $request)
+    {
+        return Product::all();
+    }
+
     public function index(Request $request)
     {
         $data = Product::orderBy('id','desc')->paginate(12);

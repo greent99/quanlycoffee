@@ -54,6 +54,7 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'product'], function () {
     Route::post('/add','Api\ProductController@store');
     Route::post('update/{id}','Api\ProductController@update');
     Route::delete('delete/{id}','Api\ProductController@destroy');
+    Route::get('/index', 'Api\ProductController@all');
 });
 
 //handle order
