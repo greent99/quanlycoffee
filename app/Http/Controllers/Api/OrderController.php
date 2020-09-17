@@ -29,7 +29,7 @@ class OrderController extends BaseController
     public function createOrder(Request $request)
     {
         $validation = [
-            'total_price' => 'required|numeric',
+            'total_price' => 'required|numeric|between:1000,1000000000',
         ];
         $validator = $this->validation($request,$validation);
         if($validator->fails())
