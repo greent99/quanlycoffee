@@ -15,9 +15,15 @@ use Validator;
 class OrderController extends BaseController
 {
 
-    public function index(Request $request)
+    public function all(Request $request)
     {
         return Order::all();
+    }
+
+    public function index(Request $request)
+    {
+        $order = Order::paginate(12);
+        return $this->responseSuccess($order);
     }
 
     public function createOrder(Request $request)

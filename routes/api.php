@@ -61,8 +61,9 @@ Route::group(['middleware'=>['jwt.auth'],'prefix'=>'product'], function () {
 
 //handle order
 Route::group(['middleware'=>['jwt.auth'],'prefix'=>'order'], function () {
-    Route::get('/', 'Api\OrderController@index');
+    Route::get('/index', 'Api\OrderController@all');
     Route::get('show/{id}', 'Api\OrderController@show');
+    Route::get('/', 'Api\OrderController@index');
     Route::get('detail/{id}', 'Api\OrderController@getOrderDetail');
     Route::post('create', 'Api\OrderController@createOrder');
     Route::post('update/{id}', 'Api\OrderController@update');
