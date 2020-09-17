@@ -72,7 +72,7 @@ class GroupCategoryController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $groupcategory = GroupCategory::find($id);
+        $groupcategory = GroupCategory::all()->except(1)->find($id);
         if (!$groupcategory) {
             return $this->responseError($groupcategory, "Group category not found", 404);
         } else {
@@ -105,7 +105,7 @@ class GroupCategoryController extends BaseController
      */
     public function destroy($id)
     {
-        $data = GroupCategory::find($id);
+        $data = GroupCategory::all()->except(1)->find($id);
         if($data)
         {
             $products = $data->product()->get();

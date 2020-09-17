@@ -107,16 +107,16 @@ class CategoryController extends BaseController
      */
     public function destroy($id)
     {
-        // $data = Category::find($id);
-        // if($data)
-        // {
-        //     $data = $data->delete();
-        //     return $this->responseSuccess($data,"Success",204);
-        // }
-        // else
-        // {
-        //     return $this->responseError($data,'Category not found',404);
-        // }
+        $data = Category::find($id);
+        if($data)
+        {
+            $data = $data->delete();
+            return $this->responseSuccess($data,"Success",204);
+        }
+        else
+        {
+            return $this->responseError($data,'Category not found',404);
+        }
     }
 
     public function validation($request, $data)
