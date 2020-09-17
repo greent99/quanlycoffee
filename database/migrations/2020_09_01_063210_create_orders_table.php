@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $currentDate = Carbon::now()->toDateTimeString();
             $table->increments('id');
             $table->datetime('date_create')->default($currentDate);
-            $table->bigInteger('total_price')->default(0);
+            $table->float('total_price')->default(0);
             $table->float('cash_given')->default(0);
             $table->float('cash_return')->default(0);
             $table->float('discount')->default(0);
